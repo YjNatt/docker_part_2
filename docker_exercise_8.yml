@@ -10,6 +10,9 @@ services:
       - 80:80
     networks:
       - backbone
+ # Make sure in the nginx.conf _frontend-connection-url_ and _backend-connection-url
+ # are pointing to the host machine's ip address and NOT localhost. This is because localhost
+ # is referencing the nginx container.
 
   front-end:
     depends_on:
