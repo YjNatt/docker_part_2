@@ -8,25 +8,18 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 80:80
-    networks:
-      - backbone
- # Make sure in the nginx.conf _frontend-connection-url_ and _backend-connection-url
- # are pointing to the host machine's ip address and NOT localhost. This is because localhost
- # is referencing the nginx container.
+    depends_on:
+      - front-end
+      - back-end
 
   front-end:
-    depends_on:
-      - nginx
     build: ../material-applications/example-frontend/
     ports:
       - 5000:5000
     container_name: front-end
-    networks:
-      - backbone
+
 
   back-end:
-    depends_on:
-      - nginx
     build: ../material-applications/example-backend/
     environment:
       - REDIS_HOST=redis-container
@@ -41,17 +34,10 @@ services:
   redis:
     image: redis
     container_name: redis-container
-    networks:
-      - backbone
+ 
 
   postgres-db:
     image: postgres
     environment:
       POSTGRES_PASSWORD: example
     container_name: postgres-db
-    networks:
-      - backbone
-
-networks:
-  backbone:
-    driver: bridge
